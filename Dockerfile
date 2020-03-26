@@ -5,6 +5,7 @@ ADD utils /go/src/absCAServer/utils
 
 ADD server/rca.crt /go/
 ADD server/rca.key /go/
+ADD server/localhost.crt /go
 
 RUN go install absCAServer/server
 
