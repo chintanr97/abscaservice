@@ -237,7 +237,7 @@ subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid:always,issuer
 
 basicConstraints = critical,CA:true
-subjectAltName=DNS:ca,DNS:localhost
+subjectAltName=DNS:ca,DNS:localhost,DNS:absca.e771764e47df4c2cbe25.eastus2.aksapp.io
 
 # Key usage: this is typical for a CA certificate. However since it will
 # prevent it being used as an test self-signed certificate it is best

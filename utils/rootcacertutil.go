@@ -18,8 +18,8 @@ func convertCertificateToBase64String(certPEMBlock *pem.Block) string {
 }
 
 //RootCACertUtil : The server calls this function to create certificate for a node identity
-func RootCACertUtil(requestType int) (string, string, string, string) {
-	//Start NodeCertUtil call
+func RootCACertUtil(requestType int) (string, string) {
+	//Start RootCACertUtil call
 	log.Println("Hello! This is RootCACertUtil.")
 
 	//Read root cert
@@ -31,5 +31,5 @@ func RootCACertUtil(requestType int) (string, string, string, string) {
 	}
 
 	base64EncodedRootCert := convertCertificateToBase64String(rootCACertBlock)
-	return base64EncodedRootCert, "", base64EncodedRootCert, ""
+	return base64EncodedRootCert, base64EncodedRootCert
 }
