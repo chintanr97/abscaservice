@@ -25,22 +25,22 @@ func OrgAdminCertUtil(name string, secret string) (string, string, string, strin
 
 	//Create node attributes
 	orgName := strings.Split(name, ".")[1]
-	nodeProperties := certSubject{
+	orgAdminProperties := certSubject{
 		CN:      name,
 		Org:     []string{orgName},
 		OU:      []string{"admin"},
 		Hosts:   []string{"fabric-tools"},
 		IsCA:    false,
-		IsNode:  true,
+		IsNode:  false,
 		IsAdmin: true,
 	}
 
 	//Create node cert
-	nodeProperties.IsTLS = false
-	nodeCert, nodeKey := createCertificate(nodeProperties, *rootCA)
+	orgAdminProperties.IsTLS = false
+	adminCert, adminKey := createCertificate(orgAdminProperties, *rootCA)
 
-	nodeProperties.IsTLS = true
-	nodeTLSCert, nodeTLSKey := createCertificate(nodeProperties, *rootCA)
+	orgAdminProperties.IsTLS = true
+	adminTLSCert, adminTLSKey := createCertificate(orgAdminProperties, *rootCA)
 
-	return nodeCert, nodeKey, nodeTLSCert, nodeTLSKey
+	return adminCert, adminKey, adminTLSCert, adminTLSKey
 }

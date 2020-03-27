@@ -106,8 +106,8 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate) (s
 		keyBytes, err := x509.MarshalECPrivateKey(privateKey)
 		check(err, "Could not convert Intermediate CA private key to bytes.")
 
-		caCert, caKey := writeCertificateAndKeyToString(certBytes, keyBytes)
-		return caCert, caKey
+		rootCACert, rootCAKey := writeCertificateAndKeyToString(certBytes, keyBytes)
+		return rootCACert, rootCAKey
 
 	} else if userProperties.IsNode {
 		certProperties.KeyUsage = x509.KeyUsageDigitalSignature
@@ -125,8 +125,6 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate) (s
 			Critical: false,
 			Value:    []byte(customAttrs),
 		}
-
-		certProperties.ExtraExtensions = []pkix.Extension{e1}
 
 		certProperties.ExtraExtensions = []pkix.Extension{e1}
 
@@ -168,8 +166,8 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate) (s
 		keyBytes, err := x509.MarshalECPrivateKey(privateKey)
 		check(err, "Could not convert admin private key to bytes.")
 
-		clientCert, clientKey := writeCertificateAndKeyToString(certBytes, keyBytes)
-		return clientCert, clientKey
+		adminCert, adminKey := writeCertificateAndKeyToString(certBytes, keyBytes)
+		return adminCert, adminKey
 	}
 
 	certProperties.KeyUsage = x509.KeyUsageDigitalSignature
