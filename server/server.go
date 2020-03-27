@@ -23,6 +23,10 @@ type aadUserEnrollRequest struct {
 	AccessToken string
 }
 
+type rootCAEnrollRequest struct {
+	RequestType int
+}
+
 type httpResponseObject struct {
 	IDCert    string
 	IDKey     string
@@ -49,8 +53,13 @@ func serveHTTP(w http.ResponseWriter, req *http.Request) {
 			var request aadUserEnrollRequest
 			err = json.NewDecoder(req.Body).Decode(&request)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
+				var request rootCAEnrollRequest
+				err = json.NewDecoder(req.Body).Decode(&request)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusBadRequest)
+					return
+				}
+				idCert, idKey, tlsIDCert, tlsIDKey = utils.RootCACertUtil(request.RequestType)
 			}
 
 			idCert, idKey, tlsIDCert, tlsIDKey = utils.AADCertUtil(request.AccessToken)
