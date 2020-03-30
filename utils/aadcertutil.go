@@ -45,6 +45,16 @@ func AADCertUtil(accessToken string) (string, string, string, string) {
 	rootCA, err := x509.ParseCertificate(rootCABlock.Bytes)
 	check(err, "Could not parse the CA certificate. Please check the format.")
 
+	//Read root cert private key
+	keyin, err := ioutil.ReadFile("rca.key")
+	check(err, "Could not read file (\"rca.key\"). CA credentials were not found.")
+	rootCAPrivateKeyBlock, _ := pem.Decode(keyin)
+	if rootCAPrivateKeyBlock == nil {
+		log.Println("failed to decode pem file - Cannot create private key block from .PEM file.")
+	}
+	rootCAPrivateKey, err := x509.ParseECPrivateKey(rootCAPrivateKeyBlock.Bytes)
+	check(err, "Could not parse the CA private key. Please check the format.")
+
 	//Fetch client attributes
 	userID, err := getUserID(accessToken)
 	userAttributes := fetchUserAttributes(accessToken, userID)
@@ -53,9 +63,9 @@ func AADCertUtil(accessToken string) (string, string, string, string) {
 
 	//Create client cert
 	userAttributes.IsTLS = false
-	clientCert, clientKey := createCertificate(userAttributes, *rootCA)
+	clientCert, clientKey := createCertificate(userAttributes, *rootCA, rootCAPrivateKey)
 	userAttributes.IsTLS = true
-	clientTLSCert, clientTLSKey := createCertificate(userAttributes, *rootCA)
+	clientTLSCert, clientTLSKey := createCertificate(userAttributes, *rootCA, rootCAPrivateKey)
 
 	return clientCert, clientKey, clientTLSCert, clientTLSKey
 }

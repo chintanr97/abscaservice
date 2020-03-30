@@ -58,7 +58,7 @@ func writeCertificateAndKeyToString(certBytes []byte, keyBytes []byte) (string, 
 	return base64EncodedPEMCert, base64EncodedPEMKey
 }
 
-func createCertificate(userProperties certSubject, rootCert x509.Certificate) (string, string) {
+func createCertificate(userProperties certSubject, rootCert x509.Certificate, rootKey *ecdsa.PrivateKey) (string, string) {
 	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	check(err, "Failed to generate ECDSA private key.")
 
@@ -129,7 +129,7 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate) (s
 
 		certProperties.ExtraExtensions = []pkix.Extension{e1}
 
-		certBytes, err := x509.CreateCertificate(rand.Reader, &certProperties, &rootCert, &publicKey, privateKey)
+		certBytes, err := x509.CreateCertificate(rand.Reader, &certProperties, &rootCert, &publicKey, rootKey)
 		check(err, "Failed to create client certificate.")
 
 		keyBytes, err := x509.MarshalECPrivateKey(privateKey)
@@ -162,7 +162,7 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate) (s
 
 		certProperties.ExtraExtensions = []pkix.Extension{e1}
 
-		certBytes, err := x509.CreateCertificate(rand.Reader, &certProperties, &rootCert, &publicKey, privateKey)
+		certBytes, err := x509.CreateCertificate(rand.Reader, &certProperties, &rootCert, &publicKey, rootKey)
 		check(err, "Failed to create admin certificate.")
 
 		keyBytes, err := x509.MarshalECPrivateKey(privateKey)
@@ -190,7 +190,7 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate) (s
 
 	certProperties.ExtraExtensions = []pkix.Extension{e1}
 
-	certBytes, err := x509.CreateCertificate(rand.Reader, &certProperties, &rootCert, &publicKey, privateKey)
+	certBytes, err := x509.CreateCertificate(rand.Reader, &certProperties, &rootCert, &publicKey, rootKey)
 	check(err, "Failed to create client certificate.")
 
 	keyBytes, err := x509.MarshalECPrivateKey(privateKey)
