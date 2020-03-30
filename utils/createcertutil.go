@@ -110,6 +110,7 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate) (s
 		return rootCACert, rootCAKey
 
 	} else if userProperties.IsNode {
+		certProperties.NotAfter = time.Now().AddDate(2, 0, 0)
 		certProperties.KeyUsage = x509.KeyUsageDigitalSignature
 		certProperties.DNSNames = userProperties.Hosts
 
@@ -138,6 +139,7 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate) (s
 		return nodeCert, nodeKey
 
 	} else if userProperties.IsAdmin {
+		certProperties.NotAfter = time.Now().AddDate(1, 0, 0)
 		certProperties.KeyUsage = x509.KeyUsageDigitalSignature
 		certProperties.DNSNames = userProperties.Hosts
 
