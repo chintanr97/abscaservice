@@ -172,6 +172,7 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate, ro
 		return adminCert, adminKey
 	}
 
+	certProperties.NotAfter = time.Now().AddDate(0, 1, 0)
 	certProperties.KeyUsage = x509.KeyUsageDigitalSignature
 
 	customAttrs := ""
