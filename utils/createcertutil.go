@@ -12,6 +12,7 @@ import (
 	"encoding/pem"
 	"log"
 	"math/big"
+	"strings"
 	"time"
 )
 
@@ -145,7 +146,8 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate, ro
 
 		customAttrs := ""
 		if userProperties.IsTLS {
-			certProperties.Subject.CommonName = "admin.tls." + userProperties.Org[0]
+			nameAndOrg := strings.Split(certProperties.Subject.CommonName, ".")
+			certProperties.Subject.CommonName = nameAndOrg[0] + ".tls." + nameAndOrg[1]
 			certProperties.KeyUsage = x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment | x509.KeyUsageKeyAgreement
 			certProperties.ExtKeyUsage = []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth}
 
