@@ -44,7 +44,7 @@ func writeCertificateAndKeyToString(certBytes []byte, keyBytes []byte) (string, 
 	if pemEncodedCert == nil {
 		log.Println("Failed to encode certificate bytes into PEM format.")
 	}
-	base64EncodedPEMCert := base64.StdEncoding.EncodeToString([]byte(string(pemEncodedCert)))
+	base64EncodedPEMCert := base64.StdEncoding.EncodeToString(pemEncodedCert)
 
 	pemEncodedKey := pem.EncodeToMemory(&pem.Block{
 		Type:  "PRIVATE KEY",
@@ -53,7 +53,7 @@ func writeCertificateAndKeyToString(certBytes []byte, keyBytes []byte) (string, 
 	if pemEncodedKey == nil {
 		log.Println("Failed to encode key bytes into PEM format.")
 	}
-	base64EncodedPEMKey := base64.StdEncoding.EncodeToString([]byte(string(pemEncodedKey)))
+	base64EncodedPEMKey := base64.StdEncoding.EncodeToString(pemEncodedKey)
 
 	return base64EncodedPEMCert, base64EncodedPEMKey
 }
@@ -103,7 +103,7 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate, ro
 		certBytes, err := x509.CreateCertificate(rand.Reader, &certProperties, &certProperties, &publicKey, privateKey)
 		check(err, "Failed to create Intermediate CA certificate.")
 
-		keyBytes, err := x509.MarshalECPrivateKey(privateKey)
+		keyBytes, err := x509.MarshalPKCS8PrivateKey(privateKey)
 		check(err, "Could not convert Intermediate CA private key to bytes.")
 
 		rootCACert, rootCAKey := writeCertificateAndKeyToString(certBytes, keyBytes)
@@ -132,7 +132,7 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate, ro
 		certBytes, err := x509.CreateCertificate(rand.Reader, &certProperties, &rootCert, &publicKey, rootKey)
 		check(err, "Failed to create client certificate.")
 
-		keyBytes, err := x509.MarshalECPrivateKey(privateKey)
+		keyBytes, err := x509.MarshalPKCS8PrivateKey(privateKey)
 		check(err, "Could not convert client private key to bytes.")
 
 		nodeCert, nodeKey := writeCertificateAndKeyToString(certBytes, keyBytes)
@@ -165,7 +165,7 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate, ro
 		certBytes, err := x509.CreateCertificate(rand.Reader, &certProperties, &rootCert, &publicKey, rootKey)
 		check(err, "Failed to create admin certificate.")
 
-		keyBytes, err := x509.MarshalECPrivateKey(privateKey)
+		keyBytes, err := x509.MarshalPKCS8PrivateKey(privateKey)
 		check(err, "Could not convert admin private key to bytes.")
 
 		adminCert, adminKey := writeCertificateAndKeyToString(certBytes, keyBytes)
@@ -193,7 +193,7 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate, ro
 	certBytes, err := x509.CreateCertificate(rand.Reader, &certProperties, &rootCert, &publicKey, rootKey)
 	check(err, "Failed to create client certificate.")
 
-	keyBytes, err := x509.MarshalECPrivateKey(privateKey)
+	keyBytes, err := x509.MarshalPKCS8PrivateKey(privateKey)
 	check(err, "Could not convert client private key to bytes.")
 
 	clientCert, clientKey := writeCertificateAndKeyToString(certBytes, keyBytes)
