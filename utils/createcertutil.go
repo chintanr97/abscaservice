@@ -147,7 +147,11 @@ func createCertificate(userProperties certSubject, rootCert x509.Certificate, ro
 		customAttrs := ""
 		if userProperties.IsTLS {
 			nameAndOrg := strings.Split(certProperties.Subject.CommonName, ".")
-			certProperties.Subject.CommonName = nameAndOrg[0] + ".tls." + nameAndOrg[1]
+			if len(nameAndOrg) == 2 {
+				certProperties.Subject.CommonName = nameAndOrg[0] + ".tls." + nameAndOrg[1]
+			} else {
+				certProperties.Subject.CommonName = nameAndOrg[0] + ".tls"
+			}
 			certProperties.KeyUsage = x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment | x509.KeyUsageKeyAgreement
 			certProperties.ExtKeyUsage = []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth}
 
